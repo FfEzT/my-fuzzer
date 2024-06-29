@@ -63,30 +63,43 @@ func main() {
     wg.Wait()
     close(result)
   }()
+
   startTime := time.Now()
   for i := range result {
     // TODO prettier
-    // TODO filter
-    // fmt.Print(i.Payload, "\t\t\t")
     if i.Err != nil {
-      fmt.Println(i.Err)
+      fmt.Println(i.Payload, "\t", i.Err)
       continue
     }
 
-    // size := len(i.Body)
-    // words := len(strings.Fields(i.Body))
-    // lines := len(strings.Split(i.Body, "\n"))
+    size := len(i.Body)
+    words := len(strings.Fields(i.Body))
+    lines := len(strings.Split(i.Body, "\n"))
 
-    // fmt.Printf(
-    //   "[Status: %s, Size: %d, Words: %d, Lines: %d, Duration: %dms]\n",
-    //   i.Status,
-    //   size,
-    //   words,
-    //   lines,
-    //   i.Duration.Milliseconds(),
-    // )
+    if !strings.Contains(i.Body, conf.Filter.Regexp) {
+      continue
+    }
+
+    // TODO filter (фильтры убирают запросы из вывода)
+    if isInValuesAndRanges(size, conf.Filter.Size) ||
+       isInValuesAndRanges(lines, conf.Filter.Lines) ||
+       //  isInValuesAndRanges(i.Status, conf.Filter.Status) ||
+       isInValuesAndRanges(words, conf.Filter.Words) {
+      continue
+    }
+
+    fmt.Printf(
+      "%s\t[Status: %s, Size: %d, Words: %d, Lines: %d, Duration: %dms]\n",
+      i.Payload,
+      i.Status,
+      size,
+      words,
+      lines,
+      i.Duration.Milliseconds(),
+    )
   }
-  fmt.Println("Time of work", time.Now().Sub(startTime))
+  endTime := time.Now()
+  fmt.Println("\n\nTime of work", endTime.Sub(startTime))
 
   // TODO Gracefull shutdown
 }
@@ -100,4 +113,20 @@ func worker(req *request.Request, wg *sync.WaitGroup, payload <-chan string, res
     )
   }
   wg.Done()
+}
+
+// TODO наверное стоит перенести в package config
+// TODO извините за название
+func isInValuesAndRanges(testable  int, filter config.ValuesAndRanges) bool {
+  for _, value := range filter.Values {
+    if testable == value {
+      return true
+    }
+  }
+  for _, rang := range filter.Ranges {
+    if rang.LeftValue <= testable && testable <= rang.RightValue {
+      return true
+    }
+  }
+  return false
 }

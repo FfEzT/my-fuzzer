@@ -30,7 +30,7 @@ func SendRequest(payload string, request *Request) *Response {
     ),
   )
   if err != nil {
-    return &Response{Err:err}
+    return &Response{Payload: payload, Err:err}
   }
   req.Header.Set("Content-Type", request.ContentType)
 
@@ -39,7 +39,7 @@ func SendRequest(payload string, request *Request) *Response {
   client := &http.Client{}
   resp, err := client.Do(req)
   if err != nil {
-    return &Response{Err:err}
+    return &Response{Payload: payload, Err:err}
   }
   defer resp.Body.Close()
 
