@@ -66,7 +66,6 @@ func main() {
 
   startTime := time.Now()
   for i := range result {
-    // TODO prettier
     if i.Err != nil {
       fmt.Println(i.Payload, "\t", i.Err)
       continue
@@ -83,13 +82,14 @@ func main() {
     // TODO filter (фильтры убирают запросы из вывода)
     if isInValuesAndRanges(size, conf.Filter.Size) ||
        isInValuesAndRanges(lines, conf.Filter.Lines) ||
-       //  isInValuesAndRanges(i.Status, conf.Filter.Status) ||
+        isInValuesAndRanges(i.Status, conf.Filter.Status) ||
        isInValuesAndRanges(words, conf.Filter.Words) {
       continue
     }
 
+    // TODO pretty output
     fmt.Printf(
-      "%s\t[Status: %s, Size: %d, Words: %d, Lines: %d, Duration: %dms]\n",
+      "%s\t[Status: %d, Size: %d, Words: %d, Lines: %d, Duration: %dms]\n",
       i.Payload,
       i.Status,
       size,

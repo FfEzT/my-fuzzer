@@ -9,7 +9,7 @@ import (
 
 type Response struct {
   Payload string
-  Status string
+  Status int
   Body string
   Duration time.Duration
   Err error
@@ -45,11 +45,10 @@ func SendRequest(payload string, request *Request) *Response {
 
   endTime := time.Now()
 
-
   body, _ := io.ReadAll(resp.Body)
   return &Response{
     payload,
-    resp.Status,
+    resp.StatusCode,
     string(body),
     endTime.Sub(startTime),
     nil,
