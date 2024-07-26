@@ -8,8 +8,8 @@ import (
 )
 
 type Response struct {
-  Payload string
   Status int
+  Payload string
   Body string
   Duration time.Duration
   Err error
@@ -46,6 +46,7 @@ func SendRequest(payload string, request *Request) *Response {
   endTime := time.Now()
 
   body, _ := io.ReadAll(resp.Body)
+
   return &Response{
     payload,
     resp.StatusCode,
