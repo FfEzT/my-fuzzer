@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -13,10 +15,10 @@ pub struct Config {
   // content of body
   pub payload: String,
 
-  #[arg(short, long)]
+  #[arg(short, long, default_value_t = String::from_str("").unwrap())]
   pub content_type: String,
 
-  #[arg(short, long)]
+  #[arg(short, long, default_value_t = String::from_str("POST").unwrap())]
   pub method: String,
 
   #[arg(long, default_value_t = 3)]

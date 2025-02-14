@@ -8,4 +8,5 @@ name = "fuzzer"
 path = "src/main.rs"
 
 [dependencies]
+batch-channel = "0.4.2"
 clap = { version = "4.5.29", features = ["derive"] }
